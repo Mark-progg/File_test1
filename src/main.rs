@@ -52,7 +52,10 @@ fn main() -> Result<(), Error> {
 */
 
     let Output_thread = thread::spawn(move|| {
-        println!("Output_thread");
+
+        let mut path_Output = String::new();
+        let b3 = std::io::stdin().read_line(&mut path_Output).unwrap();
+
 
 
         
@@ -61,7 +64,7 @@ fn main() -> Result<(), Error> {
 
     let Input_thread = thread::spawn(move || {
         loop {
-        println!("{:?}", path_Input);
+        //println!("{:?}", path_Input);
         let mut Input_file= File::open(&mut path_Input.trim());
 
         let mut Input_file = match Input_file {
@@ -79,13 +82,35 @@ fn main() -> Result<(), Error> {
                 }
             },
         };
+        let mut output_line = String::new(); //создание строки в которую загоняем строку из файла
+        Input_file.read_to_string(&mut output_line).unwrap();
+        println!("{:?}", &mut output_line);
 
     };
     });
 
     let Control_thread = thread::spawn(|| {
-        println!("Control_thread finished the work ");
-        thread::sleep(Duration::from_millis(10000));
+        loop {
+        
+        let mut Control_file= File::open("X.txt");
+
+        let mut Control_file = match Control_file {
+            Ok(file) => {
+                break;
+                file},
+            Err(error) => match error.kind() {
+                ErrorKind::NotFound => {
+                    thread::sleep(Duration::from_millis(1000));
+                    println!("Err() ErrorKind::NotFound ");
+                    continue;
+                },
+                other_error => {
+                    panic!("Problem opening the file: {:?}", other_error)
+                }
+            },
+        };
+
+    };
     });
 
     Control_thread.join().unwrap();
