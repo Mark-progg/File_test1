@@ -7,6 +7,7 @@ use std::io::Read;
 use std::fs;
 use std::io::ErrorKind;
 
+
 fn main() -> Result<(), Error> {
 
     let mut path_input = String::new(); //ввод контейнера 1 
